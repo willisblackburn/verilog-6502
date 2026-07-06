@@ -59,7 +59,7 @@ output WE;              // write enable
 input IRQ;              // interrupt request
 input NMI;              // non-maskable interrupt request
 input RDY;              // Ready signal. Pauses CPU when RDY=0
-output reg SYNC;        // AB is first cycle of the intruction
+output SYNC;            // AB is first cycle of the intruction
 
 /*
  * internal signals
@@ -1064,27 +1064,7 @@ always @(posedge clk or posedge reset)
     endcase
 
 
-/*
- * Sync state machine
- */
-always @(posedge clk or posedge reset)
-    if( reset )
-        SYNC <= 1'b0;
-    else if( RDY ) case( state )
-        BRA0   : SYNC <= !cond_true;
-        BRA1   : SYNC <= !(CO ^ backwards);
-        BRA2,
-        FETCH,
-        REG,
-        PUSH1,
-        PULL2,
-        RTI4,
-        JMP1,
-        BRA2   : SYNC <= 1'b1;
-        default: SYNC <= 1'b0;
-    endcase
-
-//assign SYNC = state == DECODE;
+assign SYNC = state == DECODE;
 
 /*
  * Additional control signals
