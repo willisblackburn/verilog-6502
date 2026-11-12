@@ -882,10 +882,12 @@ always @(posedge clk)
         if( plp ) I <= ADD[2];
 
 /*
- * Update D flag
+ * Update D flag. The 65C02 clears D on BRK and interrupts.
  */
 always @(posedge clk )
-    if( state == RTI2 )
+    if( state == BRK3 )
+        D <= 0;
+    else if( state == RTI2 )
         D <= DIMUX[3];
     else if( state == DECODE ) begin
         if( sed ) D <= 1;
